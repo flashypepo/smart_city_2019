@@ -1,0 +1,10 @@
+{
+    "STATIC_IP": "",
+    "SUBNET" : "192.168.178.0",
+    "GATEWAY_IP": "192.168.178.1",
+    "MASKER": "255.255.255.0",
+    "SSID": "Jouw netwerk SSID",
+    "PASSWRD" : "Jouw netwerk PASSWORD",
+    "DNS": "8.8.8.8",
+    "IDENTITY": "Jouw PyScan"
+}
