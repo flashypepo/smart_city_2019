@@ -26,6 +26,7 @@ import pycom
 import _thread
 
 DEBUG = False  # 2019-0910 changed, True to see debug messages
+USE_RFID = True  # 2019-1025 added
 
 RGB_BRIGHTNESS = 0x8
 RGB_RED = (RGB_BRIGHTNESS << 16)
@@ -102,8 +103,11 @@ class App:
 
 
 if __name__ == '__main__':
-    print('RFID demo started...')
-    app = App()
-    # This is the start of our main execution... start the thread
-    _thread.start_new_thread(app.discovery_loop, (app.nfc, 0))
-    # _thread.start_new_thread(send_sensor_data, ('Thread 2', 10))
+    print('RFID demo started... {}'.format(USE_RFID))
+    if USE_RFID:
+        app = App()
+        # This is the start of our main execution... start the thread
+        _thread.start_new_thread(app.discovery_loop, (app.nfc, 0))
+        # _thread.start_new_thread(send_sensor_data, ('Thread 2', 10))
+    else:
+        pycom.heartbeat(True)

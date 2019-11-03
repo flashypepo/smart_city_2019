@@ -1,7 +1,8 @@
 # boot.py -- run on boot-up
 
-USE_WIFI = False  # 2019-0910 changed
+USE_WIFI = False  # 2019-1025 changed
 
+print('Use Wifi... {}'.format(USE_WIFI))
 if USE_WIFI:
     from wifimanager import WifiManager
     try:

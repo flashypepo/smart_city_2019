@@ -1,20 +1,21 @@
 """
 main.py - main startup of workshop 4  analog and digital IO,
 sensors and actuators
+2019-0926 Peter - added USE_GFX eand BME280 sample code
 2019-0917 Peter - split up in modules
 2019-0912 Peter - workshop 4 sample code
 
 System configuration:
-sensor/actuator       | GPIO-pin        | class
-----------------------------------------------
+sensor/actuator       | GPIO-pin        | Application code
+----------------------------------------------------------
 digitalIO - leds      | G15, G28        | ledsApp
 analogIO - TMP36      | G3              | tmp36App
 OLED i2c              | I2C_SCL / G16   | SSD1306_I2C
                       | I2C_SDA / G17   |
 actuator - servo      | G12             | servoApp
-I2C-LCD display       | I2C_SCL/I2C_SDA | I2cLcd(LcdApi)
-   2 * 16 chars       |                 |
-digitalIO - neopixels | Gxx             | neopixelsApp
+I2C-LCD 2x16 chars    | I2C_SCL/I2C_SDA | I2cLcd(LcdApi)
+digitalIO - neopixels | G22             | neopixelsApp
+BME280 sensor         | I2C_SCL, I2C_SDA| test_bme280
 analogIO - LDR        | G5              | ldrApp
 
 """
@@ -34,11 +35,13 @@ DEBUG = False  # to DEBUG or not
 # device configuration:
 # analog/digital IO, sensors/actuator, I2C/SPI
 USE_LEDS = True           # digital IO: actuator - using leds
-USE_TMP36 = True         # analog IO: (ambient)temperature sensor
 USE_OLED_I2C = True       # I2C: using OLED-I2C display
+USE_TMP36 = True         # analog IO: (ambient)temperature sensor + OLED
 USE_SERVO = True         # PWM: actuator - servo
-USE_NEOPIXELS = True     # digital IO: actuator - using neopixels (5V)
 USE_LCD_I2C = True       # I2C: 2*16 chars LCD display - 5V/level-shifter
+USE_NEOPIXELS = True     # digital IO: actuator - using neopixels (5V)
+
+USE_GFX = False          # EXTRA demo for drawing graphics on OLED-display(s)
 
 USE_LDR = False            # analog IO, sensor - using lightsensor
 USE_DISPLAY_SPI = False   # SPI: using TFT-SPI display
@@ -76,6 +79,13 @@ if __name__ == '__main__':
         app.welcome(msg)
         oled = app.oled
         print('\tOLED:', oled)
+        if USE_GFX:
+        # include graphics demo
+            from test_gfx import demo
+            demo(oled)
+            # showtime...
+            time.sleep(3)
+
 
     # LCD_I2C display
     print('LCD-I2C display...{}'.format(USE_LCD_I2C))
@@ -101,7 +111,7 @@ if __name__ == '__main__':
         # servo is attached to GPIO-pin G12
         servoPin = G12
         # servo range hobby-servo SG90: 0.127 .. 0.040
-        # servo range Tower Pro MG90S: 0.120 .. 0.040
+        # servo range Tower Pro MG90S: 0.120 .. 0.030
         # servoRange = range(40, 128)  # servo Hobby servo SG90
         servoRange = range(30, 120)  # servo: Tower pro MG90S
         servo = ServoSweepApp(servoPin, servoRange)

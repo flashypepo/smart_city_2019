@@ -13,7 +13,7 @@ from machine import ADC
 import _thread
 import time
 
-USE_DEBUG = True  # 2019-0925 changed
+USE_DEBUG = False  # 2019-0927 changed
 
 
 class TMP36App():
@@ -34,7 +34,7 @@ class TMP36App():
     def setDisplay(self):
         return self._display
 
-    # 2019-0917 is setter is defined, you must also define a getter
+    # 2019-0917 if setter is defined, you must also define a getter
     @setDisplay.setter
     def setDisplay(self, display=None):
         """ setter for display attribute.
@@ -71,7 +71,7 @@ class TMP36App():
             temperature = self.calculate_temperature(value)
             if self._display is not None:
                 self.showOnDisplay(temperature)
-            elif USE_DEBUG:
+            if USE_DEBUG:
                 self.showOnConsole(temperature)
             time.sleep(dt)
 

@@ -1,5 +1,4 @@
 # MicroPython SSD1306 OLED driver, I2C and SPI interfaces
-# creator:
 # 2019-0915 Peter added flip() and mirror()
 
 import time
