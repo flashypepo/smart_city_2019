@@ -57,12 +57,12 @@ class WifiManager:
         station = self._wlan  # network.WLAN(mode=network.WLAN.STA)
         while not station.isconnected():
             if USE_DEBUG:
-                print('waiting for network...')
+                print('WifiManager - waiting for network...')
             time.sleep(1)
             machine.idle()
         ip = station.ifconfig()[0]
         if USE_DEBUG:
-            print('Device IP address on network:', ip)
+            print('WifiManager - device IP address on network:', ip)
         return ip
 
     # pycom connect

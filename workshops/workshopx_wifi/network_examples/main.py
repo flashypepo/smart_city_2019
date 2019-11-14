@@ -129,9 +129,10 @@ import network
 import time
 
 def wait_for_networking():
+    print('checking network connection...')
     station = network.WLAN(mode=network.WLAN.STA)
     while not station.isconnected():
-        print('waiting for network...')
+        print('waiting for connection...')
         time.sleep(1)
     ip = station.ifconfig()[0]
     print('Device IP address on network:', ip)
