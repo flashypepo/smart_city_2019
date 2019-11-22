@@ -22,12 +22,12 @@ Format 'wificonfig.json':
 # pycom:
 from network import WLAN, Server
 import machine
+import time
 import json
 from ubinascii import hexlify
 
 # configurations
-# DEBUG or not debug
-USE_DEBUG = False   # 2019-0910 changed
+USE_DEBUG = False   # DEBUG or not debug
 
 
 class WifiManager:
@@ -52,17 +52,30 @@ class WifiManager:
             print('WifiManager::JSON settings: {}'.format(config))
         return config
 
+    def wait_for_networking(self):
+        """ wait unitil network is connected and returns IP"""
+        station = self._wlan  # network.WLAN(mode=network.WLAN.STA)
+        while not station.isconnected():
+            if USE_DEBUG:
+                print('WifiManager - waiting for network...')
+            time.sleep(1)
+            machine.idle()
+        ip = station.ifconfig()[0]
+        if USE_DEBUG:
+            print('WifiManager - device IP address on network:', ip)
+        return ip
+
     # pycom connect
     def connect(self):
         """connect() - connects device according to network parameters in JSON-file."""
-        self._wlan = WLAN() # get current object, without changing the mode
+        self._wlan = WLAN()  # get current object, without changing the mode
 
         # skip connecting, when a soft-reset is performed
         if machine.reset_cause() != machine.SOFT_RESET:
             self._wlan.init(mode=WLAN.STA)
             # configuration below MUST match your home router settings!!
             # IP, Subnet, Gateway, DNS
-            if self._config['STATIC_IP'] is None:
+            if self._config['STATIC_IP'] is not None:
                 if USE_DEBUG:
                     print('WifiManager::Static IP configuration for SSID: ',
                           self._config['SSID'])
@@ -86,11 +99,14 @@ class WifiManager:
 
                 # change the line below to match your network ssid, security and password
                 self._wlan.connect(self._config['SSID'], auth=(WLAN.WPA2, self._config['PASSWRD']), timeout=5000)
-                while not self._wlan.isconnected():
-                    machine.idle()  # save power while waiting
+                ip = self.wait_for_networking()
+                #while not self._wlan.isconnected():
+                #    time.sleep_ms(50)   # trial-and-error delay
+                #    machine.idle()  # save power while waiting
 
         # connected, return network config
-        return self._wlan.ifconfig()
+        return ip
+        #return self._wlan.ifconfig()
 
     # wrapper for disconnecting network
     def disconnect(self):
