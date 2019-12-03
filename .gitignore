@@ -5,3 +5,17 @@ assets/Micropython_Cookbook_Code*
 assets/pycom_firmware_update_1.16.1.dmg
 workshops/workshopx_wifi/network_examples/config/wificonfig_wf.json
 workshops/workshopx_wifi/network_examples/pymakr.conf
+workshops/workshopyy_ttn/adressen.txt
+workshops/workshopyy_ttn/boot.py
+workshops/workshopyy_ttn/lib/appConstants.py
+workshops/workshopyy_ttn/lib/hcsr04.py
+workshops/workshopyy_ttn/lib/LoraConnection.py
+workshops/workshopyy_ttn/lib/loraConstants.py
+workshops/workshopyy_ttn/lib/mqtt.py
+workshops/workshopyy_ttn/lib/servo90.py
+workshops/workshopyy_ttn/lib/settings.py
+workshops/workshopyy_ttn/lib/ssd1306.py
+workshops/workshopyy_ttn/main.py
+workshops/workshopyy_ttn/main_org.py
+workshops/workshopyy_ttn/notities.txt
+workshops/workshopyy_ttn/pymakr.conf
