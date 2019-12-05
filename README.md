@@ -15,4 +15,4 @@ Folders:
 
 * datasheets - pinout diagrams
 
-Updated: 2019-1205 PP added CCS811 / gas sensor example
+Updated: 2019-1205 PP
