@@ -11,7 +11,7 @@ Pre-conditie: device is connected to web (see boot.py)
     onderbroken worden met een harde-reset en
     onderbreken main programma met Ctrl-C.
 
-2019-1203 Demos work for Pycom version 1.18.2.* - 1.19.0.b4.
+2019-1203 Demos work for Pycom version 1.18.2.* - 1.19.0.b4. 
           Demos do not work with Pycom v1.20.*
 
 2019-1103 examples from Micropython Cookbook, packtpub publishing, 2018
@@ -133,13 +133,13 @@ import time
 
 #''' 2019-1203 see wifi in boot.py -----
 def wait_for_networking():
-    #  print('checking network connection...')
+    print('checking network connection...')
     station = network.WLAN()
     while not station.isconnected():
-        # print('waiting for connection...')
+        print('waiting for connection...')
         time.sleep(1)
     ip = station.ifconfig()[0]
-    # print('Device IP address on network:', ip)
+    print('Device IP address on network:', ip)
     return ip
 #'''
 
@@ -566,7 +566,7 @@ if __name__ == '__main__':
     print('\nEntering main.py...')
 
     # activate/deactivate various demo's
-    USE_DNS_DEMO = False
+    USE_DNS_DEMO = True
     USE_HTTP_REQUEST_SOCKET_DEMO = False
     USE_HTTP_REQUEST_UREQUETSTS_DEMO = False
     USE_WEBSERVICE_JSON = False
@@ -579,9 +579,9 @@ if __name__ == '__main__':
 
     # demo fo wait-for-network connected...
     # see implementation of lib/wifimanager.py
-    print('DEMO: wait_for_networking...')
+    print('DEMO wait_for_networking...')
     ip = wait_for_networking()
-    print('device IP=', ip)
+    print('device ip:', ip)
     print('-----')
 
     """ Note: When you run Python on a typical computer,

@@ -17,8 +17,8 @@ from wifisettings import known_nets
 import micropython
 micropython.alloc_emergency_exception_buf(100)
 
-uart = machine.UART(0, 115200)
-os.dupterm(uart)
+#uart = machine.UART(0, 115200)
+#os.dupterm(uart)
 
 USE_WIFI = True  # connect to Wifi (True) or not (False)
 RED = 0xff0000

@@ -2,7 +2,7 @@
 wifimanager.py - connects to Wifi networks
 * Micropython: Pycom uP
 * static or dynamic IP
-2019-1203 removed JSON configuration. Works on Python dictionay of known nets.
+* JSON-based
 2019-0910 checked if still working - minor code changes
 2018-0528 PePo adopted to pycom. add mac-address
 
@@ -17,6 +17,7 @@ from ubinascii import hexlify
 # configurations
 USE_DEBUG = False   # DEBUG or not debug
 
+
 def print_debug(msg):
     """print_debug() - for debugging """
     if USE_DEBUG:
@@ -27,8 +28,16 @@ class WifiManager:
 
     def __init__(self, known_nets):
         self._known_nets = known_nets
-        self._wl = None
+        # create network in STAtion mode
+        # pycom: device always starts up in AP-mode
+        #self._wl = WLAN()
+        #self._wl.mode(WLAN.STA)
 
+    '''def print_debug(self, message):
+        """print_debug() - for debugging """
+        if USE_DEBUG:
+            print(msg)
+    '''
 
     # 2019-1203 new, due to Exception error in legacy WifiManager
     # pre-condition: self._known_nets is not None
@@ -50,13 +59,17 @@ class WifiManager:
 
             known_nets_names = frozenset([key for key in self._known_nets])
             net_to_use = list(nets & known_nets_names)
+            print_debug("Wifimanager - SSID to use...{}".format(net_to_use))
             try:
                 net_to_use = net_to_use[0]
+                print_debug("Wifimanager - net to use...{}".format(net_to_use))
                 net_properties = self._known_nets[net_to_use]
                 pwd = net_properties['pwd']
                 sec = [e.sec for e in available_nets if e.ssid == net_to_use][0]
+                print_debug("Wifimanager - net_properties...{}".format(net_properties))
                 if 'wlan_config' in net_properties:
-                    wl.ifconfig(config=net_properties['wlan_config'])
+                    print_debug("Wifimanager - wlan_config...{}".format(net_properties['wlan_config']))
+                    self._wl.ifconfig(config=net_properties['wlan_config'])
                 self._wl.connect(net_to_use, (sec, pwd), timeout=10000)
                 ip = self.wait_for_networking(1)
                 self._ssid = net_to_use

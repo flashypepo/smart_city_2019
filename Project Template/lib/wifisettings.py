@@ -26,7 +26,9 @@ known_nets = {
 """
 known_nets = {
     'devices': {'pwd': 'devices2',
-                'wlan_config': ('145.44.186.xxx', '255.255.255.128', '145.44.186.1', '8.8.8.8')
+                       'wlan_config': ('145.44.186.xxx', '255.255.255.128', '145.44.186.1', '8.8.8.8')
                 },
-    'home-ssid': {'pwd': 'devices2'},
+    'ZiggoPePo': {'pwd': 'hGsnbaY2yfrw',
+                         'wlan_config': ('192.168.178.103', '255.255.255.0', '192.168.178.1', '8.8.8.8')
+                  }
 }
