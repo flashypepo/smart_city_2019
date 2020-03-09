@@ -1,0 +1,17 @@
+Pycom firmware update: 1.20.2.rc6 (pybytes)
+2020-03
+
+Changed baud rate to 230400
+Read 4 KiB from config in 0.19 seconds
+Changed baud rate to 921600
+File system type set to FatFS
+Wrote 28 KiB from bootloader.bin in 0.8 seconds
+Wrote 4 KiB from partitions_8MB.bin in 0.09 seconds
+Wrote 1.93 MiB from lopy4.bin in 23.16 seconds
+Booting from partition: factory
+Wrote 4 KiB to otadata in 0.07 seconds
+Wrote 4 KiB to config in 0.09 seconds
+Device ID: 240AC4C76AD0
+LoRa MAC: 70B3D5499075777E
+Sigfox ID: 01B2962B
+Sigfox PAC: 26FA45E5A67604F4
