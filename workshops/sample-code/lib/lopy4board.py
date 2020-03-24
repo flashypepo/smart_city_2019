@@ -1,5 +1,6 @@
 """
 LoPy4 pinouts and colors for RGB-led
+2020-03 PP added SPI default pins
 2020-03 PP add color definitions
 2020-0228 Peter redefined known pins with Pin.exp_board
 TODO: check it!
@@ -52,6 +53,16 @@ BLACK = 0x000000
 # I2C
 I2C_SCL = Pin.exp_board.G15  # 'P8'
 I2C_SDA = Pin.exp_board.G16  # 'P9'
+
+# SPI - default
+SPI_CLK = Pin.exp_board.G17   # 'P10'
+SPI_MOSI = Pin.exp_board.G22  # 'P11'
+SPI_MISO = Pin.exp_board.G4   # 'P14'
+# suggestions for next pins...
+SPI_RST = Pin.exp_board.G15
+SPI_DC = Pin.exp_board.G16
+SPI_CS = Pin.exp_board.G28
+
 
 # SD disk
 SD_CLK = Pin.exp_board.G10

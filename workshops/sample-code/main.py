@@ -16,13 +16,13 @@ firmware v1.20.2.rc6 (pybytes)
 
 # execution of the various demos
 if __name__ == '__main__':
-    print('\nEntering main.py... GPIO demos')
+    print('\nEntering main.py...')
 
     # activate/deactivate various demo's
 
     # workshop: demo - 'Hello World'
     # blink RGBLed of the LoPy4
-    DEMO_BLINKING_RGB = True
+    DEMO_BLINKING_RGB = False
 
     # GPIO-demos
     # workshop: demo's
@@ -59,9 +59,27 @@ if __name__ == '__main__':
     # i2c - display/actuator
     DEMO_OLED_DISPLAY = False  # OLED display
 
+    # SPI - TFT-display/actuator
+    # TFT 1.8' 160*128 ST7735S
+    DEMO_TFT_DISPLAY = False
+
+    # neopixels, 8-stick, level-shifter
+    DEMO_NEOPIXELS = True
+
+    # Various sensors
+    DEMO_HSR04 = True    # HSR04 ultrasonic proximity sensor (digital)
+    DEMO_PIR = False     # PIR, IR proximity sensor (analog)
+    DEMO_CSS811 = False  # Air quality sensor (I2C)
+    DEMO_SGP30 = False   # another air quality sensor (I2C)
+
     #################################
     # execute the GPIO examples
     #################################
+    # 2020-0321 TFT display
+    if DEMO_TFT_DISPLAY is True:
+        from examples.display import tftApp
+        tftApp.main()
+
     # 2020-03 PP: OLED first, then other applications can be executed too.
     if DEMO_OLED_DISPLAY is True:
         from time import sleep
@@ -129,7 +147,25 @@ if __name__ == '__main__':
         adc = external_gpio.ADCLed(led=led, pin=Pin.exp_board.G5)
         pass
 
+    # Neopixels demo
+    if DEMO_NEOPIXELS is True:
+        from examples.display import neopixelsApp
+        neopixelsApp.main()
 
+    if DEMO_HSR04 is True:
+        # TODO: from examples.proximitysensors import hsr04App
+        # TODO: hsr04App.main()
+        from machine import Pin
+        from hsr04 import HSR04
+        echoPin = Pin.exp_board.G7
+        triggerPin = Pin.exp_board.G8
+        sensor = HSR04(echoPin, triggerPin)
+        try:
+            while True:
+                distance = sensor.distance_median()
+                print("Distance: {:00.1f} cm".format(distance))
+        except KeyboardInterrupt:
+            print('done!')
 
     # more advanced demos or
     # exercise solution samples
