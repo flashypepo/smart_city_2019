@@ -63,14 +63,20 @@ if __name__ == '__main__':
     # TFT 1.8' 160*128 ST7735S
     DEMO_TFT_DISPLAY = False
 
-    # neopixels, 8-stick, level-shifter
+    # neopixels chain with level-shifter and good power supply
     DEMO_NEOPIXELS = True
 
     # Various sensors
     DEMO_HSR04 = True    # HSR04 ultrasonic proximity sensor (digital)
-    DEMO_PIR = False     # PIR, IR proximity sensor (analog)
+    DEMO_PIR = True     # PIR, IR proximity sensor (analog)
     DEMO_CSS811 = False  # Air quality sensor (I2C)
     DEMO_SGP30 = False   # another air quality sensor (I2C)
+
+    # #################
+    # Projects i.e. combination of sensors
+    # #################
+    # distance controls color of neopixel chain
+    PROJECT_HSR04_NEOPIXELS = False  # work in progress
 
     #################################
     # execute the GPIO examples
@@ -148,24 +154,26 @@ if __name__ == '__main__':
         pass
 
     # Neopixels demo
+    # TODO: make an application app
     if DEMO_NEOPIXELS is True:
+        print("Neopixels - light show...")
         from examples.display import neopixelsApp
-        neopixelsApp.main()
+        app = neopixelsApp.App()
+        app.run(delay=5)
 
+    # distance sensor HSR04
     if DEMO_HSR04 is True:
-        # TODO: from examples.proximitysensors import hsr04App
-        # TODO: hsr04App.main()
-        from machine import Pin
-        from hsr04 import HSR04
-        echoPin = Pin.exp_board.G7
-        triggerPin = Pin.exp_board.G8
-        sensor = HSR04(echoPin, triggerPin)
-        try:
-            while True:
-                distance = sensor.distance_median()
-                print("Distance: {:00.1f} cm".format(distance))
-        except KeyboardInterrupt:
-            print('done!')
+        print("HSR04 sensor: distance measurement...")
+        from examples.proximitysensors import hsr04App
+        app = hsr04App.App()
+        app.run()
+
+    # PIR sensor: object detection (IR)
+    if DEMO_PIR is True:
+        print("PIR sensor: object detection (IR)...")
+        from examples.proximitysensors import pirApp
+        app = pirApp.App()
+        app.run()
 
     # more advanced demos or
     # exercise solution samples
@@ -176,6 +184,19 @@ if __name__ == '__main__':
     if DEMO_BINAIRE_COUNTER is True:
         from examples.gpio import binaire_counter
         binaire_counter.main(maximum=256, dt=0.1)
+
+    # PROJECTS
+    if PROJECT_HSR04_NEOPIXELS is True:
+        from examples.projects import colorNeopixelsApp
+        app = colorNeopixelsApp.App()
+        app.run()
+        # # distance controls color of neopixels
+        # from machine import Pin
+        # from hsr04 import HSR04
+        # echoPin = Pin.exp_board.G7
+        # triggerPin = Pin.exp_board.G8
+        # app = coloredNeopixelsApp.App(Din, echoPin, triggerPin)
+        # app.run()
 
     # cleanup
     import gc

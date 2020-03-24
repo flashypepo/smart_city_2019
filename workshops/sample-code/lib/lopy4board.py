@@ -49,6 +49,7 @@ RED = 0xff0000
 BLUE = 0x0000ff
 GREEN = 0x00ff00
 BLACK = 0x000000
+LIGHT_WHITE = 127
 
 # I2C
 I2C_SCL = Pin.exp_board.G15  # 'P8'

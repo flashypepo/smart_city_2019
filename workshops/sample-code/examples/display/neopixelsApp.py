@@ -1,13 +1,13 @@
 """
-Neopixel demo
+application which demonstrates animation on neopixel chain.
 
 TODO:
-1.  move/add animations to class Animations
+1.  make a class Animations from which animations can be used.
 2.  add 'oldskool plasmascreens' from Tony DiCola
     especially for 8*8 neopixel matrix.
     Use good power source > 1.5A
 
-Source lib/ws2812 driver:
+2020-0324 PP new, based upon source lib/ws2812 driver:
 https://core-electronics.com.au/tutorials/WS2812_and_NeoPixel_with_Pycom.html
 """
 from machine import Pin
@@ -15,26 +15,34 @@ from time import sleep_ms, sleep
 import os
 
 from ws2812 import WS2812
-# from animations import rainbow
+# TODO: from animations import rainbow
+
+# device configuration
+dinPin = Pin.exp_board.G22
+NUMLED = const(8)  # neopixel stick
+# NUMLED = const(37)  # Neopixels HEX of M5Stack
+# NUMLED = const(45)  # stick + HEX
+# NUMLED = const(64)  # 8*8 neopixel matrix
+wait = 5  # delay in ms
+BRIGHTNESS = 10  # brightness 10%
 
 
-class NeopixelsApp():
-    def __init__(self, pinLed, numLed=8, brightness=10):
-        print('NeopixelsApp contructor entered...')
-        self._chain = WS2812(ledNumber=numLed,
-                             brightness=brightness,
-                             dataPin=pinLed)
-        self._numLed = numLed
-        self._data = [(0, 0, 0)] * numLed
+class App():
+
+    def __init__(self):
+        # print('NeopixelsApp contructor entered...')
+        self._chain = WS2812(ledNumber=NUMLED,
+                             brightness=BRIGHTNESS,
+                             dataPin=dinPin)
+        self._data = [(0, 0, 0)] * NUMLED
         self.clear()
 
     def clear(self):
-        print('clearing {} neopixels...'.format(self._numLed))
-        self._data = [(0, 0, 0)] * self._numLed
+        self._data = [(0, 0, 0)] * NUMLED
         self._chain.show(self._data)
-        sleep_ms(500)  # trial-and-error
+        sleep_ms(100)  # trial-and-error
 
-    def Wheel(self, WheelPos):
+    def wheel(self, WheelPos):
         WheelPos = 255 - WheelPos
         if WheelPos < 85:
             return (255 - WheelPos * 3, 0, WheelPos * 3)
@@ -46,20 +54,13 @@ class NeopixelsApp():
 
     # #################################
     # animations
-    # TODO: move to class Animations
+    # TODO: class Animations
     # #################################
-    # Cycles all the lights through the same rainbow colors
-    def rainbow(self, wait):
-        for j in range(0, 256, 1):
-            for i in range(0, self._numLed, 1):
-                self._data[i] = self.Wheel((i+j & 255))
-                self._chain.show(self._data)
-                sleep_ms(wait)
 
     # sparkle the LEDs to the set color
     def sparkle(self, c, wait):
-        pixel = int.from_bytes(os.urandom(1), "big") % self._numLed
-        pixel2 = int.from_bytes(os.urandom(1), "big") % self._numLed
+        pixel = int.from_bytes(os.urandom(1), "big") % NUMLED
+        pixel2 = int.from_bytes(os.urandom(1), "big") % NUMLED
         self._data[pixel] = c
         self._data[pixel2] = c
         self._chain.show(self._data)
@@ -67,31 +68,39 @@ class NeopixelsApp():
         self._data[pixel] = (0, 0, 0)
         self._data[pixel2] = (0, 0, 0)
 
+    def getRandomBrightness(self, isWheelColor=False):
+        """ returns random color (isWheelColor is True), or,
+            random white brightness (isWheelColor is False)
+            Default: random white brightness
+        """
+        c = int.from_bytes(os.urandom(1), "big") % 255
+        if isWheelColor is True:
+            c = self.wheel(c)
+            return c
+        else:
+            return (c, c, c)
+
     def color(self, color=(0, 25, 0)):
         print('set neopixels on color {}...'.format(color))
-        self._data = [color] * self._numLed
+        self._data = [color] * NUMLED
         self._chain.show(self._data)
         sleep_ms(100)
 
-    def run(self, wait=5):
-        print('NeopixelsApp::run() ... entered')
-        c = (127, 127, 127)
+    def run(self, delay=5):
+        # print('NeopixelsApp::run({}) ... entered'.format(delay))
         try:
+            # print('clearing {} neopixels...'.format(NUMLED))
             self.clear()
+            # print('sparkle in a color...')
             while True:
-                self.sparkle(c, 50)
+                c = self.getRandomBrightness(isWheelColor=False)
+                # print('sparkle in color {}'.format(c))
+                self.sparkle(c, delay)
                 # self.rainbow(20)
         except KeyboardInterrupt:
             self.clear()
 
 
-def main():
-    numLed = 37  # Neopixels HEX of M5Stack
-    # numLed = 64  # 8*8 neopixel matrix
-    app = NeopixelsApp(Pin.exp_board.G22, numLed=numLed)
-    wait = 5  # delay in secs
-    app.run(wait)
-
-
 if __name__ == '__main__':
-    main()
+    app = App()
+    app.run()
