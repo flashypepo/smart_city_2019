@@ -2,14 +2,10 @@
 main.py - collection of GPIO examples.
 
 main.py is splitup in various modules,
-Each module can be found in folder examples/gpio.
-
-1. blinking RGB-led
-2. pulserende LED
-3. binaire LED counter
-4. OLED-display
+Each module can be found in folder examples
 
 History
+2020-0326 PP added Lorawan scanner, PIR sensor app
 2020-03 PP new, main calls applications, nothing less, nothing more
 firmware v1.20.2.rc6 (pybytes)
 """
@@ -18,76 +14,44 @@ firmware v1.20.2.rc6 (pybytes)
 if __name__ == '__main__':
     print('\nEntering main.py...')
 
-    # activate/deactivate various demo's
-
-    # workshop: demo - 'Hello World'
-    # blink RGBLed of the LoPy4
-    DEMO_BLINKING_RGB = False
-
-    # GPIO-demos
-    # workshop: demo's
-    # =============================
-    # Setting: PCB led, button, potentiometer
-    # =============================
-    # === digital output: - external led ON / OFF
+    ###############################################
+    # Configuration of the various demo's / samples
+    ###############################################
+    DEMO_BLINKING_RGB = False  # blink RGBLed of the LoPy4
     DEMO_EXTERNAL_LED = False  # external LED
-    DEMO_BUTTON = False        # external button
-
-    # ==== digital input and output: button + led
+    DEMO_BUTTON = False        # external button (polling)
     DEMO_BUTTON_LED = False    # button clicked -> LED on
+    DEMO_ADC = False           # ADC input - potentiometer
+    DEMO_LED_DIMMER = False    # TODO: Led dimmer (requires PWM)
+    DEMO_BINAIRE_COUNTER = False  # binaire counter (multiple leds)
+    DEMO_PULSING_LED = False   # TODO pulse external led
+    DEMO_OLED_DISPLAY = False  # TODO: I2C - OLED display
+    DEMO_TFT_DISPLAY = False   # TODO: SPI - TFT 1.8' 160*128 ST7735S
+    DEMO_NEOPIXELS = True     # neopixels chain (via level-shifter, good power supply)
+    DEMO_HSR04 = True         # HSR04 ultrasonic proximity sensor (digital)
+    DEMO_PIR = True            # PIR, IR proximity sensor
+    DEMO_CSS811 = False        # TODO: Air quality sensor (I2C)
+    DEMO_SGP30 = False         # TODO: another air quality sensor (I2C)
+    DEMO_LORAWAN_TTN = False   # 2020-0326 joined TTN via LorawWan succesfully
 
-    # Analoge input and output: ADC
-    DEMO_ADC = False  # ADC input - potentiometer
-
-    # LATER demo
-    DEMO_LED_DIMMER = False  # Led dimmer (requires PWM)
-
-    # =============================
-    # Setting: breadboard multiple leds
-    # EXERCISE DEMO - show no code
-    # =============================
-    # binaire counter (multiple leds)
-    DEMO_BINAIRE_COUNTER = False  # binaire counter
-
-    # =============================
-    # Setting: PCB multiple sensors,
-    #              actuators, battery-feeded
-    # =============================
-    # LATER demos
-    DEMO_PULSING_LED = False  # pulse external led
-
-    # i2c - display/actuator
-    DEMO_OLED_DISPLAY = False  # OLED display
-
-    # SPI - TFT-display/actuator
-    # TFT 1.8' 160*128 ST7735S
-    DEMO_TFT_DISPLAY = False
-
-    # neopixels chain with level-shifter and good power supply
-    DEMO_NEOPIXELS = True
-
-    # Various sensors
-    DEMO_HSR04 = True    # HSR04 ultrasonic proximity sensor (digital)
-    DEMO_PIR = True     # PIR, IR proximity sensor (analog)
-    DEMO_CSS811 = False  # Air quality sensor (I2C)
-    DEMO_SGP30 = False   # another air quality sensor (I2C)
-
-    # #################
+    #########################################
     # Projects i.e. combination of sensors
-    # #################
+    #########################################
     # distance controls color of neopixel chain
-    PROJECT_HSR04_NEOPIXELS = False  # work in progress
+    PROJECT_HSR04_NEOPIXELS = False  # TODO: work in progress
 
-    #################################
-    # execute the GPIO examples
-    #################################
-    # 2020-0321 TFT display
+    #########################################
+    # execute the DEMO examples when selected
+    #########################################
+    # TFT display
     if DEMO_TFT_DISPLAY is True:
+        print("TFT display (spi)... TODO")
         from examples.display import tftApp
         tftApp.main()
 
-    # 2020-03 PP: OLED first, then other applications can be executed too.
+    # OLED display
     if DEMO_OLED_DISPLAY is True:
+        print("OLED display (i2c)...")
         from time import sleep
         from machine import I2C
         # from ssd1306 import SSD1306_I2C as ssd
@@ -112,18 +76,21 @@ if __name__ == '__main__':
 
     # built-in RGB led - digital IO
     if DEMO_BLINKING_RGB is True:
+        print("Internal RGBLed...")
         from examples.gpio import HelloWorldRGBled
         HelloWorldRGBled.main()
 
     # external LED - digital IO
     if DEMO_EXTERNAL_LED is True:
+        print("External LED...")
         from machine import Pin
         from examples.gpio import external_gpio
         led = external_gpio.Led(pin=Pin.exp_board.G28)
         led.demo(5)
 
-    # external button - digital IO
+    # external button - digital IO - polling button
     if DEMO_BUTTON is True:
+        print("button pressed...")
         from machine import Pin
         from examples.gpio import external_gpio
         button = external_gpio.Button(pin=Pin.exp_board.G22)
@@ -131,6 +98,7 @@ if __name__ == '__main__':
 
     # button + LED - digital IO
     if DEMO_BUTTON_LED is True:
+        print("Button lits LED...")
         from machine import Pin
         from examples.gpio import external_gpio
         led = external_gpio.Led(pin=Pin.exp_board.G28)
@@ -139,6 +107,7 @@ if __name__ == '__main__':
 
     # ADC input - potentiometer
     if DEMO_ADC is True:
+        print("Potentiometer: ADC...")
         from machine import Pin
         from examples.gpio import external_gpio
         adc = external_gpio.AnalogDigital(Pin.exp_board.G5)
@@ -147,6 +116,7 @@ if __name__ == '__main__':
 
     # ADC input - Led output
     if DEMO_LED_DIMMER is True:
+        print("LED dimmer...")
         from machine import Pin
         from examples.gpio import external_gpio
         led = external_gpio.Led(pin=Pin.exp_board.G28)
@@ -154,7 +124,6 @@ if __name__ == '__main__':
         pass
 
     # Neopixels demo
-    # TODO: make an application app
     if DEMO_NEOPIXELS is True:
         print("Neopixels - light show...")
         from examples.display import neopixelsApp
@@ -197,6 +166,11 @@ if __name__ == '__main__':
         # triggerPin = Pin.exp_board.G8
         # app = coloredNeopixelsApp.App(Din, echoPin, triggerPin)
         # app.run()
+
+    # LoRaWan connection
+    if DEMO_LORAWAN_TTN is True:
+        from examples.lorawan import lorawan_scanner
+        lorawan_scanner.main(delay=2)
 
     # cleanup
     import gc

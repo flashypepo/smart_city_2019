@@ -5,36 +5,69 @@ application which detects an object via infrared (PIR sensor)
 """
 from machine import Pin
 from utime import sleep_ms
-# TODO: from pir import PIR
+import time
+
+from pir import PIR
+from lopy4board import USR_BUTTON
 
 # Device configuration
 pirPin = Pin.exp_board.G9
 
 
 class App():
-
     def __init__(self, display=None):
-        pass
-        # self._sensor = PIR(pirPin)
+        self._pir = PIR(pirPin, self.pirTriggered)
+        self._pir_triggered = False
+        self.setUSRButton()  # use USR-button on expansion board
         self._display = display
+
+    # callback for PIR sensor: object detected
+    def pirTriggered(self, pin):
+        # DEBUG: print('pirTriggered() pin: {}'.format(pin))
+        self._pir_triggered = True
+
+    # callback for USR button: stop detecting objects with PIR sensor
+    def buttonPressed(self, pin):
+        # DEBUG: print('buttonPressed() pin: {}'.format(pin))
+        self._button_pressed = True
+
+    def setUSRButton(self):
+        self._button = Pin(USR_BUTTON, mode=Pin.IN, pull=Pin.PULL_UP)
+        self._button.callback(trigger=Pin.IRQ_RISING, handler=self.buttonPressed)
+        self._button_pressed = False
+
+    def stopUSRButton(self):
+        self._button_pressed = False
+        self._button.callback()  # remove callback
+        self._button = None  # remove button
+
+    def run(self, display=None):
+        try:
+            # DEBUG: print("Starting run loop")
+            # flags
+            running = True
+            while running:
+                time.sleep_ms(500)
+                if self._pir_triggered is True:
+                    self._pir_triggered = False
+                    print('Object detected!')
+                    # do something usefull
+                elif self._button_pressed:
+                    self._button_pressed = False
+                    running = False
+            # DEBUG: print("Exited run loop")
+            print('PIR done!')
+
+        except KeyboardInterrupt:
+            self._pir.stop()  # stop PIR sensing
+            self.stopUSRButton()  # stop detecting button presses
+            print('PIR done!')
 
     def show(self, message):
         if self._display is None:
             print(message)
         # else:
         #     self._display.print(message)
-
-    def run(self, display=None, delay=20):
-        pass
-        # try:
-        #     self.show("Detecting object...")
-        #     while True:
-        #         isdetected = self._sensor.detect()
-        #         if isDetected is True:
-        #             self.show("Detection: {}".format(isdetected))
-        #         sleep_ms(delay)
-        # except KeyboardInterrupt:
-        #     self.show('done!')
 
     @property
     def display(self):
@@ -46,5 +79,5 @@ class App():
 
 
 if __name__ == '__main__':
-    app = App(display=None)
-    app.run()
+    print('main - doing nothing')
+    pass
