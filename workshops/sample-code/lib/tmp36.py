@@ -11,8 +11,9 @@ from micropython import const
 from machine import ADC
 from time import sleep
 
+
 class TMP36:
-    #resistor value in voltage divider
+    # resistor value in voltage divider
     _RESISTOR_REF = const(10)
 
     # attributes:
@@ -24,9 +25,9 @@ class TMP36:
     def __init__(self, adc_pin):
         # 2018-0911 adopted for Pycom - added attn
         self._adc = ADC()
-        self._adc.vref(1094) # calibration from LDR
-        self._sensor = self._adc.channel(pin=adc_pin, attn = ADC.ATTN_11DB)
-        self._threshold = 30 #defaut threshold
+        self._adc.vref(1094)  # calibration from LDR
+        self._sensor = self._adc.channel(pin=adc_pin, attn=ADC.ATTN_11DB)
+        self._threshold = 25  # defaut threshold
 
     # get threshold temperature celsius for temperature warning
     @property
@@ -37,7 +38,7 @@ class TMP36:
     @threshold.setter
     def threshold(self, temperature):
         """set threshold to a temperature in Celsius"""
-        #OK: print('threshold=', temperature)
+        # OK: print('threshold=', temperature)
         self._threshold = temperature
 
     # returns temperature value in Fahrenheit
@@ -51,8 +52,8 @@ class TMP36:
     # this method ALWAYS read data from sensor
     def celsius(self):
         """returns temperature in Celsius"""
-        return (self._millivolts - 500.0) / _RESISTOR_REF #Pycom/LoPy4, Huzzah
-        #NodeMCU: return (self.value) / _RESISTOR_REF
+        return (self._millivolts - 500.0) / _RESISTOR_REF  # LoPy4
+        # return (self.value) / _RESISTOR_REF  # NodeMCU
 
     # returns temperature value in Kelvin
     # Celsius to Kelvin: T(k) = T(c) + 273.15
@@ -72,25 +73,31 @@ class TMP36:
     def demo(self, threshold=30.0, dt=2.0):
         """demo of TMP36 sensor"""
         try:
-            self.threshold = threshold # for temperature warnings
+            self.threshold = threshold  # threshold for temperature warnings
             print('class TMP36 demo, threshold={0:0.1f}'.format(self._threshold))
             # start reading and displaying temperature
             while True:
-                millivolts = self._millivolts # reading in millivolts
-                celsius_temp = self.celsius() # degree Celsius
-                fahrenheit_temp = self.fahrenheit() # degree Fahrenheit
-                kelvin_temp = self.kelvin() # degree Kelvin
+                millivolts = self._millivolts  # reading in millivolts
+                celsius_temp = self.celsius()  # degree Celsius
+                fahrenheit_temp = self.fahrenheit()  # degree Fahrenheit
+                kelvin_temp = self.kelvin()  # degree Kelvin
                 print('TMP36: millivolts {0:0.1f}\tCelsius {1:0.1f}\tFahrenheit {2:0.1f}\tKelvin {3:0.1f}'.format(millivolts, celsius_temp, fahrenheit_temp, kelvin_temp))
 
                 if celsius_temp > self._threshold:
                     print('T>{0:0.1f}: alert on'.format(self._threshold))
 
-                sleep(dt) #wait > s, see datasheet
+                sleep(dt) # wait > s, see datasheet
 
         except Exception as ex:
             print(ex)
             print('TMP36 demo interrupted!')
 
+
 if __name__ == '__main__':
-    sensor = tmp36.TMP36('P15')
-    sensor.demo(25)
+    from machine import Pin
+    import tmp36
+
+    pin = Pin.exp_board.G0  # 'P15'
+    # sensor = tmp36.TMP36('P15')
+    t36_sensor = tmp36.TMP36(pin)
+    t36_sensor.demo(threshold=20)

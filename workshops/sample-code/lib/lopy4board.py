@@ -1,5 +1,7 @@
 """
 LoPy4 pinouts and colors for RGB-led
+2020-0329 PP added __version__ and __repro__,
+             added I2C default pins
 2020-03 PP added SPI default pins
 2020-03 PP add color definitions
 2020-0228 Peter redefined known pins with Pin.exp_board
@@ -39,6 +41,9 @@ ledPin = Pin.exp_board.G7
 # etc. Pin.exp_board.Gxx levert Pin op horende bij Gxx
 
 """
+__version__ = "2020-0329"
+__repro___ = "https://github.com/flashypepo/smart_city_2019"
+
 from micropython import const
 from machine import Pin
 
@@ -51,9 +56,9 @@ GREEN = 0x00ff00
 BLACK = 0x000000
 LIGHT_WHITE = 127
 
-# I2C
-I2C_SCL = Pin.exp_board.G15  # 'P8'
-I2C_SDA = Pin.exp_board.G16  # 'P9'
+# I2C - default
+I2C_SDA = Pin.exp_board.G17  # 'P10'
+I2C_SCL = Pin.exp_board.G22  # 'P11'
 
 # SPI - default
 SPI_CLK = Pin.exp_board.G17   # 'P10'
