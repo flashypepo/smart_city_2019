@@ -32,7 +32,7 @@ if __name__ == '__main__':
     button_pressed = False
 
     # PIR sensor
-    pirPin = Pin.exp_board.G9
+    pirPin = Pin.exp_board.G7
 
     # callback
     def pirTriggered(pin):

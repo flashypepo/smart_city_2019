@@ -1,11 +1,11 @@
 """
 LoPy4 pinouts and colors for RGB-led
-2020-0329 PP added __version__ and __repro__,
-             added I2C default pins
-2020-03 PP added SPI default pins
-2020-03 PP add color definitions
-2020-0228 Peter redefined known pins with Pin.exp_board
-TODO: check it!
+
+2002-0516 PP default SPI baudrate increased to 2MHz
+2020-0427 PP added SPI
+2020-03xx PP add color definitions
+2020-0228 PP redefined known pins with Pin.exp_board
+
 
 >>> from machine import Pin
 >>> help(Pin.exp_board)
@@ -39,11 +39,11 @@ Usage:
 from machine import Pin
 ledPin = Pin.exp_board.G7
 # etc. Pin.exp_board.Gxx levert Pin op horende bij Gxx
+P-numbers: LoPy4 pinsnumbering
+G-numbers: Expansion board 3.0 pin labelling
+Note: 2020-03: exp.board labelling are also P-numbers
 
 """
-__version__ = "2020-0329"
-__repro___ = "https://github.com/flashypepo/smart_city_2019"
-
 from micropython import const
 from machine import Pin
 
@@ -54,21 +54,16 @@ RED = 0xff0000
 BLUE = 0x0000ff
 GREEN = 0x00ff00
 BLACK = 0x000000
-LIGHT_WHITE = 127
 
-# I2C - default
-I2C_SDA = Pin.exp_board.G17  # 'P10'
-I2C_SCL = Pin.exp_board.G22  # 'P11'
+# I2C
+I2C_SCL = Pin.exp_board.G15  # 'P8'
+I2C_SDA = Pin.exp_board.G16  # 'P9'
 
-# SPI - default
-SPI_CLK = Pin.exp_board.G17   # 'P10'
+# SPI
+SPI_SCL = Pin.exp_board.G17   # 'P10'
 SPI_MOSI = Pin.exp_board.G22  # 'P11'
 SPI_MISO = Pin.exp_board.G4   # 'P14'
-# suggestions for next pins...
-SPI_RST = Pin.exp_board.G15
-SPI_DC = Pin.exp_board.G16
-SPI_CS = Pin.exp_board.G28
-
+SPI_DEFAULT_BAUDRATE = const(2000000)
 
 # SD disk
 SD_CLK = Pin.exp_board.G10
